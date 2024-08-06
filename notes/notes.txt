@@ -1,0 +1,3 @@
+The problem is solved if:
+    - we consider WT as baseline
+    - we start with WT in initial dataset

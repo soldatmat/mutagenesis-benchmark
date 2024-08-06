@@ -1,0 +1,23 @@
+https://arxiv.org/abs/2405.18986
+- train on sampled variants from variants with fitnes under a certain percentile
+- want generate K sequences with high fitness (-), and desirably, high diversity (+)
+- start with 128 sequences in D + 256 N_oracle_calls
+- K = 128 (+), Div. = 3.0 (on tasks: AAV medium, AAV hard, GFP medium, GFP hard)
+
+notation:
+G* ... set of K optimized sequences
+D* ... whole existing dataset
+D ... train dataset (sampled from D)
+distance ... number of mutations between two sequences
+
+metrics:
+- We use four evaluation metrics: fitness, diversity, distance from the set of initial sequences
+    (dinit), and high fitness sequences (dhigh).
+- Fitness is defined as the median of the evaluated fitness of K = 128 generated sequences.
+- Diversity is defined as the median of the distances between every
+    pair of sequences in G*.
+- The variables d_init and d_high are defined as the median of the minimum
+    distance from each sequence in G* to D and to the top 10% fitness sequences of D*, respectively.
+
+datasets:
+GFP, AAV

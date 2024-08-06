@@ -1,0 +1,8 @@
+seznám publikací, které citují náš s MIT kolegy článek z ICLR:
+https://scholar.google.com/scholar?oi=bibs&hl=en&cites=7354737689427624753,7594741411375374897,8859234974424791048
+
+V tomhle paperu jsem viděl 8 datasetů, které mi přišly na první pohled mutagenesis-based:
+https://arxiv.org/abs/2405.18986
+
+GFP a AAV předpřipravené datasety:
+https://github.com/kirjner/GGS/tree/main/data

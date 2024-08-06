@@ -1,0 +1,88 @@
+GFP
+length 237
+size 51,715
+- avg 3.7 mutations (per *gene* sequence)
+
+- random mutagenesis
+-   56,086 unique nucleotide sequences coding for
+    51,715 different protein sequences
+- most assayed genotypes contained several, up to 15, missense mutations
+
+
+
+AAV
+length 28
+size 42,330
+
+- mutating a 28-amino-acid segment
+    - all single aa substitutions
+        (and additions -> ?? not present in ground_truth.csv, all sequences have length 28 = length of the mutated region)
+- (full length min 588 amino acids)
+
+    C1) Complete set of single mutants
+
+    R) Random sequence set
+    - 2-6 mutations: 1,732–1,756 sequences each
+    - 7-10 mutations: 288–290 sequences each
+            9,885 total unique sequences (2-10 mutations)
+    - R2) two random mutations, "possible double mutants"
+    - R10) 2 to 10 random mutations
+
+    A39) Aditive model sequence set
+    -  18,155 unique sequences
+    - sampled from single-mutant data with and additive model with Monte Carlo methods
+
+    => ML training datasets: C1 + R2, C1 + R10, R10 + A39
+
+
+
+TEM
+length 286(+1)
+size 5,199
+(- all 1bp, 2bp, 3bp mutations in each codon)
+- all single amino acid substitutions in the protein
+
+
+
+E4B
+length 102
+size 98,289 (E4B paper) (91,032 according to table 1 in https://www.biorxiv.org/content/biorxiv/early/2024/05/02/2023.11.28.568945.full.pdf)
+- protein variants with two nucleotide mutations per variant on average
+932 variants with one amino acid mutation
+54,507 withtwo
+42,850 with three or more
+
+
+
+AMIE
+length 341
+size 6,417 (original paper says 6820 * 0.963)
+- >96.3% single mutation variants
+
+
+
+LGK
+length 439
+size 7,633 (original paper says 8,056)
+- single mutation variants
+
+
+
+Pab1
+length 75
+size 36,389 (table) - probably considers one of three libraries only, length would be 25 then
+size 110,745 (paper)
+    including 1246 single amino acid substitutions (∼83% of all possible ones in each library)
+    including 39,912 double amino acid substitutions (∼11% of all possible ones in each library)
+    and many other variants with three or more mutations.
+- three libraries
+- Each library spanned 75 bases (i.e., 25 amino acids) in RRM2, with an average of three mutations per variant.
+
+
+
+UBE2I
+length 159
+size 6,553 (paper)
+size 3,022 (table ? maybe consideres single amino acid changes only + wild-type)
+- 6,553 UBE2I variants, covering different combinations of 1,848 (61% of all possible) unique amino acid changes
+- same paper has five other proteins
