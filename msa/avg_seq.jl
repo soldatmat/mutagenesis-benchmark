@@ -7,46 +7,66 @@ using Combinatorics
 
 Random.seed!(42)
 
+normalize_score(score::Real) = (score - minimum(df.score)) / (maximum(df.score) - minimum(df.score))
+denormalize_score(score::Real) = score * (maximum(df.score) - minimum(df.score)) + minimum(df.score)
+
+function get_percentile(df::DataFrame, percentile::Tuple{T,T}) where {T<:Real}
+    df_sorted = sort(df, :score)
+    n_sequences = size(df_sorted)[1]
+    df_sorted = df_sorted[Int(floor(n_sequences * percentile[1]) + 1):Int(floor(n_sequences * percentile[2])), :]
+end
+
+function get_mutational_gaps(df::DataFrame)
+    df_optimal = get_percentile(df, (0.99, 1.0))
+    gaps = pairwise(hamming, df.sequence, df_optimal.sequence)
+    map(row -> minimum(row), eachrow(gaps))
+end
+
 # (some?) avGFP wild-type
-wt_sequence = "SKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK" # GFP wild-type
+#= wt_sequence = "SKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTFSYGVQCFSRYPDHMKQHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK"
 filtered_df = filter(row -> row.sequence == wt_sequence, df)
-avg_score = sum(filtered_df.score) / (size(filtered_df)[1])
+avg_score = sum(filtered_df.score) / (size(filtered_df)[1]) =#
 
 
 
 # ___ Choose dataset ___
 file_path = joinpath(@__DIR__, "..", "data", "AAV", "ground_truth.csv")
 df = CSV.read(file_path, DataFrame)
+df.gap = get_mutational_gaps(df)
 
 # ___ Define "training data" ___
-df_train = copy(df)
+percentile = (0.2, 0.4) # medium
+percentile = (0.0, 0.3) # hard 1
+percentile = (0.1, 0.3) # hard 2
+df_sorted = get_percentile(df, percentile)
 
-df_train = filter(row -> row.score <= 1.28, df)#[1:2, :]
+min_gap = 6 # medium
+min_gap = 7 # hard
+df_train = filter(row -> row.gap >= min_gap, df_sorted)
 
-df_sorted = sort(df, :score)
-df_train = df_sorted[1:256+128,:]
+#df_train = copy(df)
 
-percentile = [0.2, 0.4] # medium
-percentile = [0.1, 0.3] # hard
-n_sequences = size(df_sorted)[1]
-df_sorted = df_sorted[Int(ceil(n_sequences*percentile[1])):Int(floor(n_sequences*percentile[2])), :]
-n_train = 0 # n_train highest score variants from the percentile
-n_oracle_calls = 256 + 128 # n_oracle_calls random variants from the percentile
-df_train = df_sorted[size(df_sorted)[1]-n_train+1:size(df_sorted)[1],:]
-df_oracle_calls = df_sorted[1:size(df_sorted)[1]-n_train,:]
+#df_sorted = sort(df, :score)
+#df_train = copy(df_sorted)#[1:256+128,:]
+
+#= n_train = 0 # n_train highest score variants from the percentile
+n_oracle_calls = 3448 # n_oracle_calls random variants from the percentile
+df_train = df_sorted[size(df_sorted)[1]-n_train+1:size(df_sorted)[1], :]
+df_oracle_calls = df_sorted[1:size(df_sorted)[1]-n_train, :]
 df_oracle_calls = df_oracle_calls[shuffle(1:nrow(df_oracle_calls))[1:n_oracle_calls], :]
-df_train = vcat(df_train, df_oracle_calls)
+df_train = vcat(df_train, df_oracle_calls) =#
+
 
 
 # ___ Get avg_sequence ___
 avg_sequence = map(i -> mode(map(s -> s[i], df_train.sequence)), 1:length(df_train.sequence[1]))
-avg_sequence = String(avg_sequence)
+avg_sequence_string = String(avg_sequence)
 
-# Obtain gt score of avg_sequence
-filtered_df = filter(row -> row.sequence == avg_sequence, df)
-avg_score = sum(filtered_df.score)/(size(filtered_df)[1])
+# Obtain score of avg_sequence
+filtered_df = filter(row -> row.sequence == avg_sequence_string, df)
+avg_score = sum(filtered_df.score) / (size(filtered_df)[1])
 median(filtered_df.score)
-(median(filtered_df.score) - minimum(df.score)) / maximum(df.score)
+median(filtered_df.score) |> normalize_score
 
 
 
@@ -54,6 +74,7 @@ median(filtered_df.score)
 dists = map(i -> map(seq -> seq[i], df_train.sequence), 1:length(df_train[1, :].sequence))
 dists = map(position -> sort(collect(countmap(position)), by=x -> x[2], rev=true), dists)
 sum(map(position -> length(position), dists) .== 1) # How many positions have no mutations?
+#minimum(map(dist -> dist[1][2], dists)) # Report minimal representation of the avg (mode) sequence at a position.
 
 # ___ Create Mutants ___
 avg_sequence = map(position -> position[1][1], dists)
@@ -63,7 +84,6 @@ mutants = map(pos -> copy(avg_sequence), eachindex(dists))
 map(pos -> mutants[pos][pos] = dists[pos][length(dists[pos]) > 1 ? 2 : 1][1], eachindex(dists))
 
 # B) Most common single mutations
-# TODO replace modus symbol (maximum()) with wt_sequence symbol
 dist = reduce(vcat, map(pos -> map(pair -> (pair[1], pair[2] == maximum(map(symbol -> symbol[2], dists[pos])) ? -1 : pair[2], pos), dists[pos]), eachindex(dists)))
 sort!(dist, by=x -> x[2], rev=true)
 n_mutants = 128
@@ -82,12 +102,12 @@ map(m -> map(i -> mutants[m][mutation_pairs[m][i][3]] = mutation_pairs[m][i][1],
 # Finish creating mutants
 mutant_strings = map(i -> String(mutants[i]), eachindex(mutants))
 
-default_score = 0 # TODO ? should be predicted
+default_score = 0 # TODO ? should be predicted by oracle
 scores = map(mutant -> filter(row -> row.sequence == mutant, df).score, mutant_strings)
-mapreduce(s -> length(s) == 0, +, scores) # How many score will be replaced with the default_score.
+mapreduce(s -> length(s) == 0, +, scores) # How many score will be replaced with the default_score?
 scores = map(s -> length(s) == 0 ? default_score : mean(s), scores)
 median(scores)
-(median(scores) - minimum(df.score)) / maximum(df.score)
+median(scores) |> normalize_score
 median(pairwise(hamming, mutants))
 mean(pairwise(hamming, mutants))
 
@@ -98,6 +118,5 @@ minimum(df.score)
 maximum(df.score)
 minimum(df_train.score)
 maximum(df_train.score)
-sequence_length = length(df[1,:].sequence)
+sequence_length = length(df[1, :].sequence)
 filtered_df = filter(row -> length(row.sequence) == sequence_length, df)
-
