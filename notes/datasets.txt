@@ -1,4 +1,10 @@
+Paper with table of datasets:
+https://www.biorxiv.org/content/biorxiv/early/2024/05/02/2023.11.28.568945
+
+
+
 GFP
+https://www.nature.com/articles/nature17995
 length 237
 size 51,715
 - avg 3.7 mutations (per *gene* sequence)
@@ -11,32 +17,30 @@ size 51,715
 
 
 AAV
-length 28
+https://www.nature.com/articles/s41587-020-00793-4
+length 28 (segment)
 size 42,330
-
 - mutating a 28-amino-acid segment
     - all single aa substitutions
-        (and additions -> ?? not present in ground_truth.csv, all sequences have length 28 = length of the mutated region)
-- (full length min 588 amino acids)
-
-    C1) Complete set of single mutants
-
-    R) Random sequence set
-    - 2-6 mutations: 1,732–1,756 sequences each
-    - 7-10 mutations: 288–290 sequences each
-            9,885 total unique sequences (2-10 mutations)
-    - R2) two random mutations, "possible double mutants"
-    - R10) 2 to 10 random mutations
-
-    A39) Aditive model sequence set
-    -  18,155 unique sequences
-    - sampled from single-mutant data with and additive model with Monte Carlo methods
-
-    => ML training datasets: C1 + R2, C1 + R10, R10 + A39
+        (and additions - ?? not present in ground_truth.csv, all sequences have length 28 = length of the mutated region)
+___ AAV notes ___
+(C1) Complete set of single mutants
+(R) Random sequence set
+- 2-6 mutations: 1,732–1,756 sequences each
+- 7-10 mutations: 288–290 sequences each
+        9,885 total unique sequences (2-10 mutations)
+- (R2) two random mutations, "possible double mutants"
+- (R10) 2 to 10 random mutations
+(A39) Aditive model sequence set
+-  18,155 unique sequences
+- sampled from single-mutant data with and additive model with Monte Carlo methods
+=> ML training datasets: C1 + R2, C1 + R10, R10 + A39
+___
 
 
 
 TEM
+https://doi.org/10.1093/molbev/msu081
 length 286(+1)
 size 5,199
 (- all 1bp, 2bp, 3bp mutations in each codon)
@@ -45,6 +49,7 @@ size 5,199
 
 
 E4B
+https://doi.org/10.1073/pnas.1303309110
 length 102
 size 98,289 (E4B paper) (91,032 according to table 1 in https://www.biorxiv.org/content/biorxiv/early/2024/05/02/2023.11.28.568945.full.pdf)
 - protein variants with two nucleotide mutations per variant on average
@@ -55,6 +60,7 @@ size 98,289 (E4B paper) (91,032 according to table 1 in https://www.biorxiv.org/
 
 
 AMIE
+https://www.nature.com/articles/ncomms15695
 length 341
 size 6,417 (original paper says 6820 * 0.963)
 - >96.3% single mutation variants
@@ -62,6 +68,7 @@ size 6,417 (original paper says 6820 * 0.963)
 
 
 LGK
+https://pubs.acs.org/doi/full/10.1021/acssynbio.5b00131
 length 439
 size 7,633 (original paper says 8,056)
 - single mutation variants
@@ -69,6 +76,7 @@ size 7,633 (original paper says 8,056)
 
 
 Pab1
+https://rnajournal.cshlp.org/content/19/11/1537
 length 75
 size 36,389 (table) - probably considers one of three libraries only, length would be 25 then
 size 110,745 (paper)
@@ -81,6 +89,7 @@ size 110,745 (paper)
 
 
 UBE2I
+https://doi.org/10.15252/msb.20177908
 length 159
 size 6,553 (paper)
 size 3,022 (table ? maybe consideres single amino acid changes only + wild-type)

@@ -1,23 +1,60 @@
+    (1) Culprits:
+
+Improving Protein Optimization with Smoothed Fitness Landscapes
+https://arxiv.org/pdf/2307.00494
+-- outperformed by a trivial method (simply creating single-mutation variants with single mutations most common in training data)
+
+
+
+Robust Optimization in Protein Fitness Landscapes Using Reinforcement Learning in Latent Space
 https://arxiv.org/abs/2405.18986
-- train on sampled variants from variants with fitnes under a certain percentile
-- want generate K sequences with high fitness (-), and desirably, high diversity (+)
-- start with 128 sequences in D + 256 N_oracle_calls
-- K = 128 (+), Div. = 3.0 (on tasks: AAV medium, AAV hard, GFP medium, GFP hard)
+metrics: median fitness, diversity, novelty
+datasets: GFP, AAV
+- train on variants sampled from medium difficulty (0.2-0.4 percentile) data -> goal: generate K sequences with high fitness
+    - start with 128 sequences in D + 256 N_oracle_calls
+    - K = 128 (+), Div. = 3.0 (on tasks: AAV medium, AAV hard, GFP medium, GFP hard)
+-- outperforms the trivial method by small margin only
+-- median fitness is the same as WT fitness on GFP hard (this can be achieved by the trivial method)
 
-notation:
-G* ... set of K optimized sequences
-D* ... whole existing dataset
-D ... train dataset (sampled from D)
-distance ... number of mutations between two sequences
 
+
+Protein Design by Directed Evolution Guided by Large Language Models
+https://www.biorxiv.org/content/biorxiv/early/2024/05/02/2023.11.28.568945
+metrics: maximum fitness, diversity, novelty, average fitness, distance from WT
+datasets: GFP, AAV, TEM, E4B, AMIE, LGK, Pab1, UBE2I
+
+Latent-based Directed Evolution accelerated by Gradient Ascent for Protein Sequence Design
+https://www.biorxiv.org/content/10.1101/2024.04.13.589381v2
 metrics:
-- We use four evaluation metrics: fitness, diversity, distance from the set of initial sequences
-    (dinit), and high fitness sequences (dhigh).
-- Fitness is defined as the median of the evaluated fitness of K = 128 generated sequences.
-- Diversity is defined as the median of the distances between every
-    pair of sequences in G*.
-- The variables d_init and d_high are defined as the median of the minimum
-    distance from each sequence in G* to D and to the top 10% fitness sequences of D*, respectively.
+datasets: GFP, AAV, TEM, E4B, AMIE, LGK, Pab1, UBE2I
 
-datasets:
-GFP, AAV
+(applies to both papers above)
+++ significantly outperforms WT fitness (GFP)
+-- achieves 9.50 on GFP [1.28, 4.12], compares to other methods which achieve 5+, speculative if not just effect of inaccurate oracle
+    (also, on AAV [0.0, 19.54], many methods achieve negative highest fitness - further prove of weird oracle behavior)
+-- no method in comparison achieves AAV WT fitness
+
+
+
+Extrapolative Protein Design through Triplet-based Preference Learning
+https://www.amazon.science/publications/extrapolative-protein-design-through-triplet-based-preference-learning
+metrics: 
+datasets: GFP, AAV
+- train on medium difficulty (0.2-0.4 percentile) data -> goal: generate sequences with higher fitness than in training set
+    - GFP: training set fitness [1.31, 3.04], avg sequence fitness 3.73
+    - AAV: training set fitness [0, 7], avg sequence fitness 9.08
+- compares multiple extrapolation methods -> - !! compared methods do not identify any notably higher-fitness variant than WT
+                                                  paper's method only slightly
+                                             - !! top 100 generated sequences avg fitness lower than WT for all methods on GFP dataset
+
+
+
+    (2) OK use of single-mutation datasets for evaluation:
+
+... add papers which use single-mutation datasets in acceptable benchmarks here ...
+
+    (3) OK but unrelated use of datasets for benchmarks
+
+? Unified rational protein engineering with sequence-based deep representation learning
+https://www.nature.com/articles/s41592-019-0598-1
+- train models to predict whether GFP variants are non/functional

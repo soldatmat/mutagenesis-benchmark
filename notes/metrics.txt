@@ -1,0 +1,13 @@
+notation:
+G* ... set of K optimized sequences
+D* ... whole existing dataset
+D ... train dataset (sampled from D)
+distance ... number of mutations between two sequences
+
+(1) Median of the evaluated fitness of K = 128 generated sequences.
+
+(2) Diversity = median of the distances between every pair of sequences in generated sequences.
+
+(3) d_init = median of the minimum distance from each sequence in D to the top 10% fitness sequences of D*.
+
+(4) d_high = median of the minimum distance from each sequence in G* to the top 10% fitness sequences of D*.

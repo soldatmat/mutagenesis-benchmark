@@ -1,3 +1,28 @@
-The problem is solved if:
-    - we consider WT as baseline
-    - we start with WT in initial dataset
+(1) The problem is not present if:
+    (A) WT is considered as baseline (should always be identified)
+    (B) WT is in initial dataset (follows the practical use case)
+
+    (C) a combinatorial dataset with (almost) full coverage on smaller number of mutation positions is used
+        - ++ provides better oracle since most variants in the limited mutational space are measured
+        - -- developed methods applicable only when small number of influental positions is pre-defined
+                (methods usually abuse that computations can be performed over all variants)
+        - datasets: GB1 (https://elifesciences.org/articles/16965), PhoQ (https://www.science.org/doi/full/10.1126/science.1257360)
+
+
+(2) The benchmark is not completely non-informative when methods identify variants with fitness higher than the WT.
+    The interpretation of the results should just be different:
+    "WT fitness -> final fitness improvement" instead of "starting fitness -> final fitness improvement"
+
+
+(3) WT should already be present in the training set (information about WT is contained within the training data either way).
+    Not including WT in training set adds unnecessary step (1) to the task:
+        (1) Infer the WT sequence (trivial with msa)
+        (2) Mutagenesis from WT
+    Addition of step (1) is misleading in terms of interpretation of the achieved fitness improvement.
+
+
+(4) Prediction-model oracle can be wrong.
+        Especially on variants with more mutations than in the dataset or with no similiar variants in the dataset.
+        Some papers make conclusion based on oracle-based fitness values wildly outside of the range in the original dataset,
+        which is speculative imo.
+

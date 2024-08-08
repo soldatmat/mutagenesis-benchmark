@@ -1,4 +1,3 @@
-!!! min_fitness might me copletely different than in paper, due to oracle.
 Fitnes values are reported as "fitness ((fitness - min_fitness) / max_fitness)".
 avg_sequence is a sequence where each symbol is determined as the modus among training sequences.
 
@@ -6,58 +5,152 @@ avg_sequence is a sequence where each symbol is determined as the modus among tr
 
 GFP:
 - max fitness = 4.123 (1.0)
-- wt fitness =
-
-avg_sequence from all variants has fitness 3.722 (0.591)
-avg_sequence from 540 lowest fitness variants (<= 1.3) has fitness 3.722 (0.591)
-avg_sequence from 384 lowest fitness variants has fitness 3.722 (0.591)
-avg_sequence from 5 lowest fitness variants (<= 1.29) has fitness 3.722 (0.591)
-avg_sequence from 3 lowest fitness variants (<= 1.29)[1:3] has fitness 3.782 (0.606)
-avg_sequence from 2 lowest fitness variants (<= 1.29)[1:2] has fitness 1.289 (0.001)
-
-    Most common single mutant at each position:
-train = 384 sequences sampled from medium difficulty percentile
-result = 237 sequences (10x avg_sequence, 227 single mutants at different positions)
-- MEDIUM:
-median fitness = 3.630 (0.569)
-diversity (median paiwrise distance) = 2.0
-mean pairwise distance = 1.874
-- HARD:
-median fitness = 3.636 (0.571)
-diversity (median paiwrise distance) = 2.0
-mean pairwise distance = 1.908
-
-
-    Most common single mutants:
-train = 384 sequences sampled from medium difficulty percentile
-result = 128 sequences
-- MEDIUM:
-median fitness = 3.578 (0.557)
-diversity (median paiwrise distance) = 2.0
-mean pairwise distance = 1.981
-- HARD:
-median fitness = 3.573 (0.555)
-diversity (median paiwrise distance) = 2.0
-mean pairwise distance = 1.981
-
+- wt fitness = 3.722 (0.859)
+avg_sequence from all variants has fitness 3.722 (0.859)
+avg_sequence from 540 lowest fitness variants (<= 1.3) has fitness 3.722 (0.859)
+avg_sequence from 384 lowest fitness variants has fitness 3.722 (0.859)
+avg_sequence from 5 lowest fitness variants (<= 1.29) has fitness 3.722 (0.859)
+avg_sequence from 3 lowest fitness variants (<= 1.29)[1:3] has fitness 3.782 (0.880)
+avg_sequence from 2 lowest fitness variants (<= 1.29)[1:2] has fitness 1.289 (0.002)
 
 AAV:
 - max fitness = 19.536 (1.0)
-- wt fitness =
-
+- wt fitness = 9.082 (0.465)
 avg_sequence from 29 lowest fitness variants (<= 1.28) has fitness 9.082 (0.465)
 avg_sequence from 11 lowest fitness variants (<= 0.0) has fitness 9.082 (0.465)
 avg_sequence from 3 lowest fitness variants (<= 0.0)[1:3] has fitness 9.082 (0.465)
 avg_sequence from 2 lowest fitness variants (<= 0.0)[1:2] has fitness 0.0 (0.0)
 
+___ training set = 384 random sequences from percentile range ___
+as in: https://arxiv.org/abs/2405.18986
+
+GFP:
+    Most common single mutant at each position:
+train = 384 sequences sampled from medium difficulty percentile
+result = 237 sequences (10x avg_sequence, 227 single mutants at different positions)
+- MEDIUM:
+median fitness = 3.630 (0.826)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.874
+- HARD:
+median fitness = 3.636 (0.828)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.908
+
+    Most common single mutants:
+train = 384 sequences sampled from the corresponding percentile
+result = 128 sequences
+- MEDIUM:
+median fitness = 3.582 (0.810)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.981
+- HARD:
+median fitness = 3.578 (0.808)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.981
+
+
+AAV:
+    Most common single mutants:
+train = 384 sequences sampled from the corresponding percentile
+result = 128 sequences
+- MEDIUM:
+median fitness = 10.949 (0.560)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.939
+- HARD:
+median fitness = 10.854 (0.556)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.946
+
+
+
+___ training set = all sequences from percentile range ___
+perecntiles as in: https://arxiv.org/pdf/2307.00494
+
+GFP:
     Most common single mutants:
 train = 384 sequences sampled from medium difficulty percentile
 result = 128 sequences
 - MEDIUM:
-median fitness = 10.847 (0.556)
+median fitness = 3.550 (0.798)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.981
+- HARD:
+median fitness = 3.519 (0.787)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.981
+
+AAV:
+    Most common single mutants:
+train = 384 sequences sampled from medium difficulty percentile
+result = 128 sequences
+- MEDIUM:
+median fitness = 11.081 (0.567)
 diversity (median paiwrise distance) = 2.0
 mean pairwise distance = 1.939
 - HARD:
-median fitness = 10.826 (0.554)
+median fitness = 10.949 (0.560)
 diversity (median paiwrise distance) = 2.0
 mean pairwise distance = 1.946
+
+
+
+___ training set = sampled randomly from percentile, same # of sequences as in paper ___
+~ as in: https://arxiv.org/pdf/2307.00494
+
+GFP:
+    Most common single mutants:
+train = 384 sequences sampled from medium difficulty percentile
+result = 128 sequences
+- MEDIUM:
+median fitness = 3.528 (0.790)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.981
+- HARD:
+median fitness = 3.556 (0.800)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.981
+
+AAV:
+    Most common single mutants:
+train = 384 sequences sampled from medium difficulty percentile
+result = 128 sequences
+- MEDIUM:
+median fitness = 10.949 (0.560)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.939
+- HARD:
+median fitness = 10.937 (0.560)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.946
+
+
+
+___ training set = as in https://arxiv.org/pdf/2307.00494 ___
+
+GFP:
+    Most common single mutants:
+train = 384 sequences sampled from medium difficulty percentile
+result = 128 sequences
+- MEDIUM:
+median fitness = 3.585 (0.811)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.982
+- HARD:
+median fitness = 3.592 (0.813)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.982
+
+AAV:
+    Most common single mutants:
+train = 384 sequences sampled from medium difficulty percentile
+result = 128 sequences
+- MEDIUM: (|D| = 2145)
+median fitness = 11.081 (0.567)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.937
+- HARD: (|D| = 3453)
+median fitness = 10.913 (0.559)
+diversity (median paiwrise distance) = 2.0
+mean pairwise distance = 1.945
