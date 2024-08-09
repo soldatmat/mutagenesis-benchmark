@@ -1,3 +1,5 @@
+    'Sparse' Low Mutation Datasest:
+
 Paper with table of datasets:
 https://www.biorxiv.org/content/biorxiv/early/2024/05/02/2023.11.28.568945
 
@@ -54,8 +56,8 @@ length 102
 size 98,289 (E4B paper) (91,032 according to table 1 in https://www.biorxiv.org/content/biorxiv/early/2024/05/02/2023.11.28.568945.full.pdf)
 - protein variants with two nucleotide mutations per variant on average
 932 variants with one amino acid mutation
-54,507 withtwo
-42,850 with three or more
+54,507 with two mutations
+42,850 with three or more mutations
 
 
 
@@ -95,3 +97,35 @@ size 6,553 (paper)
 size 3,022 (table ? maybe consideres single amino acid changes only + wild-type)
 - 6,553 UBE2I variants, covering different combinations of 1,848 (61% of all possible) unique amino acid changes
 - same paper has five other proteins
+
+
+
+    Combinatorial Datasets:
+
+GB1
+https://elifesciences.org/articles/16965
+WT protein mutated at 4 positions (20^4 possible variants)
+149,361 / 160,000 variants screened
+3,644 / 149,361 variants have fitness greater than the WT
+unmeasured variants considered to have 0 fitness in literature
+
+
+
+PhoQ
+https://www.science.org/doi/full/10.1126/science.1257360
+WT protein mutated at 4 positions (20^4 possible variants)
+140,517 / 160,000 variants screened
+1,659 / 140,517 identified as functional
+unmeasured variants considered to have 0 fitness in literature
+
+
+
+    Other Datasets:
+
+https://www.biorxiv.org/content/10.1101/2023.06.21.545880v2
+https://github.com/petergroth/FLOP
+- 3 datasets, each consisting of WT proteins from a single family
+- each sequence has fitness, binary class (non/functional)
+CM - size 855
+GH114 - size 55
+PPAT - size 615
