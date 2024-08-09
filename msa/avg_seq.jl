@@ -30,13 +30,39 @@ function get_mutation_distributions(df::DataFrame)
     map(position -> sort(collect(countmap(position)), by=x -> x[2], rev=true), dists)
 end
 
+# ___ Trainin data construction methods ___
+# Following https://arxiv.org/pdf/2307.00494
+function difficulty_filter(df::DataFrame; percentile_range::Tuple{T,T}, min_gap::Int) where {T<:Real}
+    df_sorted = get_percentile(df, percentile_range)
+    filter(row -> row.gap >= min_gap, df_sorted)
+end
+difficulty_filter_medium(df::DataFrame) = difficulty_filter(df; percentile_range=(0.2, 0.4), min_gap=6)
+difficulty_filter_hard(df::DataFrame) = difficulty_filter(df; percentile_range=(0.0, 0.3), min_gap=7)
+
+"""
+Following https://arxiv.org/pdf/2405.18986
+
+# Keywords
+- `n_train::Int`: n_train highest score variants from the percentile
+- `n_oracle_calls::Int`: n_oracle_calls random variants from the percentile
+"""
+function difficulty_filter_alt(df::DataFrame; percentile_range::Tuple{T,T}, n_train::Int, n_oracle_calls::Int) where {T<:Real}
+    df_sorted = get_percentile(df, percentile_range)
+    df_train = df_sorted[size(df_sorted)[1]-n_train+1:size(df_sorted)[1], :]
+    df_oracle_calls = df_sorted[1:size(df_sorted)[1]-n_train, :]
+    df_oracle_calls = df_oracle_calls[shuffle(1:nrow(df_oracle_calls))[1:n_oracle_calls], :]
+    vcat(df_train, df_oracle_calls)
+end
+difficulty_filter_alt_medium(df::DataFrame) = difficulty_filter_alt(df; percentile_range=(0.2, 0.4), n_train=128, n_oracle_calls=256)
+difficulty_filter_alt_hard(df::DataFrame) = difficulty_filter_alt(df; percentile_range=(0.1, 0.3), n_train=128, n_oracle_calls=256)
+
 # ___ Mutant selection methods ___
-function mutate_at_each_position(df::DataFrame)
+function mutate_at_each_position(df::DataFrame; n_mutants::Int)
     dists = get_mutation_distributions(df)
     avg_sequence = get_avg_sequence(dists)
     mutants = map(pos -> copy(avg_sequence), eachindex(dists))
     map(pos -> mutants[pos][pos] = dists[pos][length(dists[pos]) > 1 ? 2 : 1][1], eachindex(dists))
-    return mutants
+    sample(mutants, n_mutants, replace=false)
 end
 
 function common_single_mutants(df::DataFrame; n_mutants::Int)
@@ -62,38 +88,23 @@ function common_double_mutants(df::DataFrame; n_mutants::Int)
 end
 
 # ___ Load dataset ___
-file_path = joinpath(@__DIR__, "..", "data", "GFP", "ground_truth.csv")
+dataset_name = "GFP" # Choose from: "GFP", "AAV"
+file_path = joinpath(@__DIR__, "..", "data", dataset_name, "ground_truth.csv")
 df = CSV.read(file_path, DataFrame)
 df.gap = get_mutational_gaps(df)
 
-# ___ Define "training data" ___
-percentile = (0.2, 0.4) # medium
-percentile = (0.0, 0.3) # hard
-#percentile = (0.1, 0.3) # hard alternative (in https://arxiv.org/pdf/2405.18986)
-df_sorted = get_percentile(df, percentile)
+# ___ Define "training data" - Choose one ___
+# (1) Following https://arxiv.org/pdf/2307.00494
+df_train = difficulty_filter_medium(df)
+df_train = difficulty_filter_hard(df)
 
-min_gap = 6 # medium
-min_gap = 7 # hard
-df_train = filter(row -> row.gap >= min_gap, df_sorted)
+# (2) Following https://arxiv.org/pdf/2405.18986
+df_train = difficulty_filter_alt_medium(df)
+df_train = difficulty_filter_alt_hard(df)
 
-#df_train = copy(df)
-
-#df_sorted = sort(df, :score)
-#df_train = copy(df_sorted)#[1:256+128,:]
-
-#= n_train = 0 # n_train highest score variants from the percentile
-n_oracle_calls = 3448 # n_oracle_calls random variants from the percentile
-df_train = df_sorted[size(df_sorted)[1]-n_train+1:size(df_sorted)[1], :]
-df_oracle_calls = df_sorted[1:size(df_sorted)[1]-n_train, :]
-df_oracle_calls = df_oracle_calls[shuffle(1:nrow(df_oracle_calls))[1:n_oracle_calls], :]
-df_train = vcat(df_train, df_oracle_calls) =#
-
-#sum(map(position -> length(position), dists) .== 1) # How many positions have no mutations?
-#minimum(map(dist -> dist[1][2], dists)) # Report minimal representation of the avg (mode) sequence at a position.
-
-# ___ Create Mutants ___
+# ___ Create Mutants - Choose one ___
 # (A) Most common mutation at each position (! positions with no mutations produce avg_sequence)
-mutants = mutate_at_each_position(df_train)
+mutants = mutate_at_each_position(df_train; n_mutants=128)
 
 # (B) Most common single mutations
 mutants = common_single_mutants(df_train; n_mutants=128)
