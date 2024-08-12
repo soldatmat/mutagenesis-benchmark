@@ -120,6 +120,13 @@ unmeasured variants considered to have 0 fitness in literature
 
 
 
+TrpB
+https://www.pnas.org/doi/abs/10.1073/pnas.2400439121
+WT protein mutated at 4 positions (20^4 possible variants)
+160,000 / 160,000 variants screened
+
+
+
     Other Datasets:
 
 https://www.biorxiv.org/content/10.1101/2023.06.21.545880v2
