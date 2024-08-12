@@ -1,4 +1,7 @@
+using XLSX
+
 include("avg_seq.jl")
+include("utils.jl")
 
 Random.seed!(42)
 
@@ -6,6 +9,16 @@ function prepare_data(dataset_name::String)
     file_path = joinpath(@__DIR__, "..", "data", "preprocessed_data", dataset_name, dataset_name * ".csv")
     df = CSV.read(file_path, DataFrame)
     rename!(df, :fitness => :score)
+    df.gap = get_mutational_gaps(df)
+    return df
+end
+
+function prepare_data_combinatorial(dataset_name::String)
+    file_path = joinpath(@__DIR__, "..", "data", "combinatorial", dataset_name, dataset_name * ".xlsx")
+    xf = XLSX.readxlsx(file_path)
+    df = DataFrame(XLSX.readtable(file_path, XLSX.sheetnames(xf)[1]))
+    rename!(df, :Variants => :sequence)
+    rename!(df, :Fitness => :score)
     df.gap = get_mutational_gaps(df)
     return df
 end
@@ -34,24 +47,31 @@ function evaluate_method(df::DataFrame; n_mutants::Int)
     fitness_norm = normalize_score(median(scores), df)
     diversity = median(pairwise(hamming, mutants))
     novelty = median(map(col -> minimum(col), eachcol(pairwise(hamming, df_train.sequence, mutants))))
-    return (fitness, fitness_norm, diversity, novelty, n_replaced_scores)
+    return (fitness, fitness_norm, diversity, novelty, n_replaced_scores, length(mutants))
 end
 
 function evaluation_iteration(dataset_name::String; n_mutants::Int=128)
     println("Starting dataset $dataset_name ...")
-    df = prepare_data(dataset_name)
-    (fitness, fitness_norm, diversity, novelty, n_replaced_scores) = evaluate_method(df; n_mutants)
+    df = PREPARE_DATA(dataset_name)
+    (fitness, fitness_norm, diversity, novelty, n_replaced_scores, n_mutants_real) = evaluate_method(df; n_mutants)
     println("Dataset $dataset_name finished:")
     println("fitness = $fitness")
     println("fitness_norm = $fitness_norm")
     println("diversity = $diversity")
     println("novelty = $novelty")
     println("n_replaced_scores = $n_replaced_scores")
-    return (fitness, fitness_norm, diversity, novelty, n_replaced_scores)
+    return (fitness, fitness_norm, diversity, novelty, n_replaced_scores, n_mutants_real)
 end
 
 # ___ Main ___
-datasets = ["avGFP", "AAV"]#, "TEM", "E4B", "AMIE", "LGK", "Pab1", "UBE2I"] # -> (3775, 2109, 0, 63, 0, 0, 0, 0)
-CONSTRUCT_TRAIN_SET = difficulty_filter_medium
+datasets = ["avGFP", "AAV"]#, "TEM", "E4B", "AMIE", "LGK", "Pab1", "UBE2I"] # medium -> (3775, 2109, 0, 63, 0, 0, 0, 0)
+PREPARE_DATA = prepare_data
+
+datasets = ["GB1", "PhoQ"]
+PREPARE_DATA = prepare_data_combinatorial
+
+CONSTRUCT_TRAIN_SET = difficulty_filter_hard
+CONSTRUCT_TRAIN_SET = (df::DataFrame) -> difficulty_filter(df; percentile_range=(0.0, 0.3), min_gap=0)
+
 SELECT_MUTANTS = common_single_mutants
 results = map(dataset_name -> evaluation_iteration(dataset_name), datasets)

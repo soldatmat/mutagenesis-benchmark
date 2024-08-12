@@ -68,7 +68,7 @@ function common_single_mutants(df::DataFrame; n_mutants::Int)
     avg_sequence = get_avg_sequence(dists)
     dist = reduce(vcat, map(pos -> map(pair -> (pair[1], pair[2] == maximum(map(symbol -> symbol[2], dists[pos])) ? -1 : pair[2], pos), dists[pos]), eachindex(dists)))
     sort!(dist, by=x -> x[2], rev=true)
-    mutants = map(pos -> copy(avg_sequence), 1:n_mutants)
+    mutants = map(pos -> copy(avg_sequence), 1:min(n_mutants, length(dist)))
     map(m -> mutants[m][dist[m][3]] = dist[m][1], eachindex(mutants))
     return mutants
 end
