@@ -1,6 +1,7 @@
 using CSV
 using DataFrames
 using StatsBase
+using Random
 
 Random.seed!(42)
 
@@ -9,8 +10,13 @@ normalize_score(score::Real) = (score - minimum(df.score)) / (maximum(df.score) 
 denormalize_score(score::Real) = score * (maximum(df.score) - minimum(df.score)) + minimum(df.score)
 
 # ___ Choose dataset ___
-file_path = joinpath(@__DIR__, "..", "data", "GFP", "ground_truth.csv")
+file_path = joinpath(@__DIR__, "..", "data", "combinatorial", "TrpB", "fitness.csv")
 df = CSV.read(file_path, DataFrame)
+rename!(df, :Combo => :sequence)
+rename!(df, :fitness => :score)
+select!(df, :sequence, :score)
+
+CSV.write(joinpath(@__DIR__, "..", "data", "combinatorial", "PhoQ", "ground_truth.csv"), df)
 
 # ___ Get avg_sequence ___
 avg_sequence = map(i -> mode(map(s -> s[i], df.sequence)), 1:length(df.sequence[1]))

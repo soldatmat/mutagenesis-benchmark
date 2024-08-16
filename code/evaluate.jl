@@ -1,9 +1,22 @@
 using XLSX
+using Distances
 
 include("avg_seq.jl")
 include("utils.jl")
 
 Random.seed!(42)
+
+function get_percentile(df::DataFrame, percentile::Tuple{T,T}) where {T<:Real}
+    df_sorted = sort(df, :score)
+    n_sequences = size(df_sorted)[1]
+    df_sorted = df_sorted[Int(floor(n_sequences * percentile[1]) + 1):Int(floor(n_sequences * percentile[2])), :]
+end
+
+function get_mutational_gaps(df::DataFrame)
+    df_optimal = get_percentile(df, (0.99, 1.0))
+    gaps = pairwise(hamming, df.sequence, df_optimal.sequence)
+    map(row -> minimum(row), eachrow(gaps))
+end
 
 function prepare_data(dataset_name::String)
     file_path = joinpath(@__DIR__, "..", "data", "preprocessed_data", dataset_name, dataset_name * ".csv")
@@ -67,7 +80,7 @@ end
 datasets = ["avGFP", "AAV"]#, "TEM", "E4B", "AMIE", "LGK", "Pab1", "UBE2I"] # medium -> (3775, 2109, 0, 63, 0, 0, 0, 0)
 PREPARE_DATA = prepare_data
 
-datasets = ["GB1", "PhoQ"]
+datasets = ["TrpB"] # "GB1", "PhoQ"
 PREPARE_DATA = prepare_data_combinatorial
 
 CONSTRUCT_TRAIN_SET = difficulty_filter_hard
