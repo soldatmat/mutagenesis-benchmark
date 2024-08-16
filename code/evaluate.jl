@@ -1,22 +1,9 @@
 using XLSX
-using Distances
 
-include("avg_seq.jl")
+include("naive_benchmark.jl")
 include("utils.jl")
 
 Random.seed!(42)
-
-function get_percentile(df::DataFrame, percentile::Tuple{T,T}) where {T<:Real}
-    df_sorted = sort(df, :score)
-    n_sequences = size(df_sorted)[1]
-    df_sorted = df_sorted[Int(floor(n_sequences * percentile[1]) + 1):Int(floor(n_sequences * percentile[2])), :]
-end
-
-function get_mutational_gaps(df::DataFrame)
-    df_optimal = get_percentile(df, (0.99, 1.0))
-    gaps = pairwise(hamming, df.sequence, df_optimal.sequence)
-    map(row -> minimum(row), eachrow(gaps))
-end
 
 function prepare_data(dataset_name::String)
     file_path = joinpath(@__DIR__, "..", "data", "preprocessed_data", dataset_name, dataset_name * ".csv")
@@ -27,11 +14,8 @@ function prepare_data(dataset_name::String)
 end
 
 function prepare_data_combinatorial(dataset_name::String)
-    file_path = joinpath(@__DIR__, "..", "data", "combinatorial", dataset_name, dataset_name * ".xlsx")
-    xf = XLSX.readxlsx(file_path)
-    df = DataFrame(XLSX.readtable(file_path, XLSX.sheetnames(xf)[1]))
-    rename!(df, :Variants => :sequence)
-    rename!(df, :Fitness => :score)
+    file_path = joinpath(@__DIR__, "..", "data", "combinatorial", dataset_name, "ground_truth.csv")
+    df = CSV.read(file_path, DataFrame)
     df.gap = get_mutational_gaps(df)
     return df
 end
@@ -77,14 +61,14 @@ function evaluation_iteration(dataset_name::String; n_mutants::Int=128)
 end
 
 # ___ Main ___
-datasets = ["avGFP", "AAV"]#, "TEM", "E4B", "AMIE", "LGK", "Pab1", "UBE2I"] # medium -> (3775, 2109, 0, 63, 0, 0, 0, 0)
+datasets = ["avGFP", "AAV", "TEM", "E4B", "AMIE", "LGK", "Pab1", "UBE2I"] # medium -> (3775, 2109, 0, 63, 0, 0, 0, 0)
 PREPARE_DATA = prepare_data
 
-datasets = ["TrpB"] # "GB1", "PhoQ"
+datasets = ["GB1", "PhoQ", "TrpB"]
 PREPARE_DATA = prepare_data_combinatorial
 
 CONSTRUCT_TRAIN_SET = difficulty_filter_hard
-CONSTRUCT_TRAIN_SET = (df::DataFrame) -> difficulty_filter(df; percentile_range=(0.0, 0.3), min_gap=0)
+CONSTRUCT_TRAIN_SET = (df::DataFrame) -> difficulty_filter(df; percentile_range=(0.2, 0.4), min_gap=0)
 
 SELECT_MUTANTS = common_single_mutants
 results = map(dataset_name -> evaluation_iteration(dataset_name), datasets)
