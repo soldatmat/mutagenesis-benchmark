@@ -1,0 +1,13 @@
+Sarkisyan, Karen S., et al. "Local fitness landscape of the green fluorescent protein." Nature 533.7603 (2016): 397-401.
+
+BibTeX
+@article{sarkisyan2016local,
+  title={Local fitness landscape of the green fluorescent protein},
+  author={Sarkisyan, Karen S and Bolotin, Dmitry A and Meer, Margarita V and Usmanova, Dinara R and Mishin, Alexander S and Sharonov, George V and Ivankov, Dmitry N and Bozhanova, Nina G and Baranov, Mikhail S and Soylemez, Onuralp and others},
+  journal={Nature},
+  volume={533},
+  number={7603},
+  pages={397--401},
+  year={2016},
+  publisher={Nature Publishing Group UK London}
+}

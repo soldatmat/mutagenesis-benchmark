@@ -9,8 +9,9 @@ Random.seed!(42)
 normalize_score(score::Real) = (score - minimum(df.score)) / (maximum(df.score) - minimum(df.score))
 denormalize_score(score::Real) = score * (maximum(df.score) - minimum(df.score)) + minimum(df.score)
 
-# ___ Choose dataset ___
-file_path = joinpath(@__DIR__, "..", "data", "combinatorial", "TrpB", "fitness.csv")
+# ___ Choose dataset ___ AAV: 44128 (42340 unique), 42330
+file_path = joinpath(@__DIR__, "..", "data", "AAV", "ground_truth.csv")
+file_path = joinpath(@__DIR__, "..", "data", "preprocessed_data", "AAV", "AAV.csv")
 df = CSV.read(file_path, DataFrame)
 rename!(df, :Combo => :sequence)
 rename!(df, :fitness => :score)

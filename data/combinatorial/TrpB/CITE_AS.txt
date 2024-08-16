@@ -1,7 +1,4 @@
-K. E. Johnston, P. J. Almhjell, E. J. Watkins-Dulaney, G. Liu, N. J.
-Porter et al., “A combinatorially complete epistatic fitness landscape
-in an enzyme active site,” Proceedings of the National Academy of
-Sciences, vol. 121, no. 32, p. e2400439121, 2024.
+K. E. Johnston, P. J. Almhjell, E. J. Watkins-Dulaney, G. Liu, N. J. Porter et al., “A combinatorially complete epistatic fitness landscape in an enzyme active site,” Proceedings of the National Academy of Sciences, vol. 121, no. 32, p. e2400439121, 2024.
 
 BibTeX
 @article{johnston2024combinatorially,
