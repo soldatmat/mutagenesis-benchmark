@@ -11,3 +11,6 @@ Manifest.toml
 # venv
 .venv/
 pyvenv.cfg
+
+# model checkpoints
+*.tar
