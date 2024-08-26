@@ -1,0 +1,3 @@
+[submodule "code/FLIP"]
+	path = code/FLIP
+	url = https://github.com/soldatmat/FLIP
