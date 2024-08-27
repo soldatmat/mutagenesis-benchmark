@@ -18,10 +18,8 @@ from models import FluorescenceModel
 results_path = FILE_PATH / '..' / 'results' / 'flip'
 
 model = "cnn"
-dataset = "aav"
-split = "des_mut_test"
 
-n_epochs = 1 #100
+n_epochs = 100
 batch_size = 256
 kernel_size = 5
 input_size = 1024
@@ -74,14 +72,12 @@ def evaluate_cnn(data_iterator, model, device, MODEL_PATH, SAVE_PATH):
     df.to_csv(SAVE_PATH / "predictions.csv")
 
 
-def main():
+def run_cnn(train, val, test):
     device = torch.device('cuda:0')
 
-    EVAL_PATH = results_path / dataset / model / split
+    EVAL_PATH = results_path / dataset / model
+    EVAL_PATH = EVAL_PATH if split == "" else EVAL_PATH / split
     EVAL_PATH.mkdir(parents=True, exist_ok=True)
-
-    # load data
-    train, val, test, _ = load_dataset(dataset, split+'.csv')
 
     collate = ASCollater(vocab, Tokenizer(vocab), pad=True)
     train_iterator = DataLoader(SequenceDataset(train), collate_fn=collate, batch_size=batch_size, shuffle=True, num_workers=4)
@@ -103,9 +99,22 @@ def main():
     epochs_trained = train_cnn(train_iterator, val_iterator, cnn_model, device, criterion, optimizer, n_epochs, EVAL_PATH)
 
     # evaluate
-    all_iterator = DataLoader(SequenceDataset(pd.concat([train, test])), collate_fn=collate, batch_size=batch_size, shuffle=False, num_workers=4)
+    all_iterator = DataLoader(SequenceDataset(pd.concat([train, val, test])), collate_fn=collate, batch_size=batch_size, shuffle=False, num_workers=4)
     evaluate_cnn(all_iterator, cnn_model, device, EVAL_PATH, EVAL_PATH / 'evaluate')
 
 
 if __name__ == '__main__':
-    main()
+    # Load an original FLIP data split
+    #train, val, test, _ = load_dataset(dataset, split+'.csv')
+
+    datasets = ["GB1", "PhoQ", "TrpB"]
+    splits = ["medium_gap0", "hard_gap0"]
+
+    for dataset in datasets:
+        for split in splits:
+            data_path = FILE_PATH / '..' / 'data' / 'combinatorial' / dataset / ('flip_' + split + '.csv')
+            df = pd.read_csv(data_path)
+            val_split = True
+            train, val, test, max_length = prepare_dataset(df, val_split)
+
+            run_cnn(train, val, test)
