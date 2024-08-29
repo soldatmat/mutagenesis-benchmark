@@ -31,14 +31,21 @@ function evaluation_iteration(dataset_name::String; n_mutants::Int=128)
 end
 
 # ___ Main ___
-datasets = ["avGFP", "AAV", "TEM", "E4B", "AMIE", "LGK", "Pab1", "UBE2I"] # medium -> (3775, 2109, 0, 63, 0, 0, 0, 0)
-PREPARE_DATA = prepare_data
+#datasets = ["avGFP", "AAV", "TEM", "E4B", "AMIE", "LGK", "Pab1", "UBE2I"] # medium -> (3775, 2109, 0, 63, 0, 0, 0, 0)
+#PREPARE_DATA = prepare_data
 
 datasets = ["GB1", "PhoQ", "TrpB"]
-PREPARE_DATA = prepare_data_combinatorial
+PREPARE_DATA = (dataset_name::String) -> prepare_data_combinatorial(dataset_name; file_name="ground_truth_non-zero.csv")
 
-CONSTRUCT_TRAIN_SET = difficulty_filter_hard
-CONSTRUCT_TRAIN_SET = (df::DataFrame) -> difficulty_filter(df; percentile_range=(0.2, 0.4), min_gap=0)
+#CONSTRUCT_TRAIN_SET = difficulty_filter_hard
+percentile_range = (0.0, 0.3)
+min_gap = 0
+CONSTRUCT_TRAIN_SET = (df::DataFrame) -> difficulty_filter(df; percentile_range, min_gap)
 
 SELECT_MUTANTS = common_single_mutants
 results = map(dataset_name -> evaluation_iteration(dataset_name), datasets)
+
+println("\n___ RESULTS ___")
+println("percentile_range = $percentile_range")
+println("min_gap = $min_gap\n")
+map(i -> println("$(datasets[i]): $(results[i])"), eachindex(datasets))

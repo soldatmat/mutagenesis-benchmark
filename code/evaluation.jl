@@ -8,8 +8,8 @@ function prepare_data(dataset_name::String)
     return df
 end
 
-function prepare_data_combinatorial(dataset_name::String)
-    file_path = joinpath(@__DIR__, "..", "data", "combinatorial", dataset_name, "ground_truth.csv")
+function prepare_data_combinatorial(dataset_name::String; file_name::String="ground_truth.csv")
+    file_path = joinpath(@__DIR__, "..", "data", "combinatorial", dataset_name, file_name)
     df = CSV.read(file_path, DataFrame)
     df.gap = get_mutational_gaps(df)
     return df
