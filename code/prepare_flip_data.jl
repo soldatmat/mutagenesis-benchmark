@@ -54,7 +54,8 @@ complete_sequences!(df_missing, mutation_positions, wt_string)
 
 # Training set
 df.index = range(1, size(df)[1])
-train = difficulty_filter(df; percentile_range, min_gap)
+df_non_zero = filter(row -> row.score != 0.0, df)
+train = difficulty_filter(df_non_zero; percentile_range, min_gap)
 set = zeros(Bool, size(df)[1])
 set[train.index] .= 1
 df.set = map(x -> x ? "train" : "test", set)
@@ -79,4 +80,4 @@ df = vcat(df, df_missing)
 rename!(df, :score => :target)
 
 # Save
-CSV.write(joinpath(data_path, "flip_" * difficulty * "_gap0.csv"), df)
+CSV.write(joinpath(data_path, "flip_non-zero_" * difficulty * "_gap0.csv"), df)
