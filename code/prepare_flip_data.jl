@@ -49,8 +49,8 @@ df.gap = get_mutational_gaps(df)
 df_missing.gap = get_mutational_gaps(df_missing)
 
 # Construct full sequences
-complete_sequences!(df, mutation_positions, wt_string)
-complete_sequences!(df_missing, mutation_positions, wt_string)
+#complete_sequences!(df, mutation_positions, wt_string)
+#complete_sequences!(df_missing, mutation_positions, wt_string)
 
 # Training set
 df.index = range(1, size(df)[1])
@@ -80,4 +80,4 @@ df = vcat(df, df_missing)
 rename!(df, :score => :target)
 
 # Save
-CSV.write(joinpath(data_path, "flip_non-zero_" * difficulty * "_gap0.csv"), df)
+CSV.write(joinpath(data_path, "flip_non-zero_" * difficulty * "_gap0_short.csv"), df)
