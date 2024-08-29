@@ -22,6 +22,8 @@ function evaluate_mutants(mutants::Vector{Vector{Char}}, df::DataFrame, df_train
     scores = map(mutant -> filter(row -> row.sequence == mutant, df).score, mutant_strings)
     n_replaced_scores = mapreduce(s -> length(s) == 0, +, scores) # How many score will be replaced with default_score?
     scores = map(s -> length(s) == 0 ? default_score : mean(s), scores)
+    n_replaced_scores = n_replaced_scores + mapreduce(s -> ismissing(s), +, scores) # How many score will be replaced with default_score?
+    map(i -> scores[i] = ismissing(scores[i]) ? default_score : scores[i], eachindex(scores))
 
     # ___ Evaluate ___
     fitness = median(scores)

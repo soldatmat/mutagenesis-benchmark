@@ -6,8 +6,8 @@ using Distances
 using Combinatorics
 
 # ___ Helper functions ___
-normalize_score(score::Real, df::DataFrame) = (score - minimum(df.score)) / (maximum(df.score) - minimum(df.score))
-denormalize_score(score::Real, df::DataFrame) = score * (maximum(df.score) - minimum(df.score)) + minimum(df.score)
+normalize_score(score::Real, df::DataFrame) = (score - minimum(skipmissing(df.score))) / (maximum(skipmissing(df.score)) - minimum(skipmissing(df.score)))
+denormalize_score(score::Real, df::DataFrame) = score * (maximum(skipmissing(df.score)) - minimum(skipmissing(df.score))) + minimum(skipmissing(df.score))
 
 function get_percentile(df::DataFrame, percentile::Tuple{T,T}) where {T<:Real}
     df_sorted = sort(df, :score)
