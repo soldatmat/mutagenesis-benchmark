@@ -51,7 +51,7 @@ def run_ridge(train, test):
 
 if __name__ == '__main__':
     datasets = ["GB1", "PhoQ", "TrpB"]
-    splits = ["medium_gap0", "hard_gap0"]
+    splits = ["non-zero_medium_gap0", "non-zero_hard_gap0"]
 
     for dataset in datasets:
         for split in splits:
