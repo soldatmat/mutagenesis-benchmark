@@ -1,0 +1,24 @@
+`medium` = percentile_range=(0.2,0.4), min_gap=0
+`hard` = percentile_range=(0.0,0.3), min_gap=0
+
+___ `non-0.0 fitness train variants` / `all train variants` ___
+
+AAV 44117 / 44128 = 1.00:
+    medium: 8826 / 8826 = 1.00
+    hard: 13227 / 13238 = 1.00
+
+GFP 56086 / 56086 = 1.00:
+    medium: 11217 / 11217 = 1.00
+    hard: 16825 / 16825 = 1.00
+
+GB1 119884 / 149361 = 0.80:
+    medium: 29872 / 29872 = 1.00
+    hard: 15331 / 44808 = 0.34
+
+PhoQ 51011 / 140517 = 0.36:
+    medium: 0 / 28103 = 0.00
+    hard: 0 / 42155 = 0.00
+
+TrpB 123879 / 159129 = 0.78:
+    medium: 28401 / 31826 = 0.89
+    hard: 12488 / 47738 = 0.26
