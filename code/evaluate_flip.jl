@@ -4,8 +4,8 @@ using DataFrames
 include("evaluation.jl")
 
 
-datasets = ["GB1", "TrpB"]
-splits = ["medium_gap0", "hard_gap0"]
+datasets = ["GB1", "PhoQ", "TrpB"]
+splits = ["non-zero_medium_gap0", "non-zero_hard_gap0"]
 
 model = "cnn"
 n_mutants = 128
