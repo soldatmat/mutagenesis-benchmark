@@ -11,7 +11,7 @@ FILE_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(str(FILE_PATH / 'FLIP' / 'baselines'))
 
 from utils import *
-from evals import regression_eval
+from evals import regression_eval, evaluate_ridge
 from train import *
 from models import RidgeRegression
 
@@ -21,7 +21,7 @@ model = "ridge"
 
 alpha = 1.0
 
-def evaluate_ridge(X, y, model, SAVE_PATH, sequences):
+def ridge_predict(X, y, model, SAVE_PATH, sequences):
     out = model.predict(X)
     #rho, mse = regression_eval(predicted=out, labels=y, SAVE_PATH=SAVE_PATH)
 
@@ -43,11 +43,18 @@ def run_ridge(train, test):
     # train and pass back trained model
     lr_trained, epochs_trained = train_ridge(train_seq, train_target, lr_model)
     
-    # TODO evaluate train + test data
     all_seq = np.concatenate([train_seq, test_seq])
     all_target = np.concatenate([train_target, test_target])
     all_sequences = train.sequence.values.tolist() + test.sequence.values.tolist()
-    evaluate_ridge(all_seq, all_target, lr_trained, EVAL_PATH, all_sequences)
+    ridge_predict(all_seq, all_target, lr_trained, EVAL_PATH, all_sequences)
+
+    train_rho, train_mse = evaluate_ridge(train_seq, train_target, lr_trained, EVAL_PATH / 'train')
+    test_rho, test_mse = evaluate_ridge(test_seq, test_target, lr_trained, EVAL_PATH / 'test')
+
+    print('done training and testing: dataset: {0} model: {1} split: {2} \n'.format(dataset, model, split))
+    print('full results saved at: ', EVAL_PATH) 
+    print('train stats: Spearman: %.2f MSE: %.2f ' % (train_rho, train_mse))
+    print('test stats: Spearman: %.2f MSE: %.2f ' % (test_rho, test_mse))
 
 if __name__ == '__main__':
     datasets = ["GB1", "PhoQ", "TrpB"]
