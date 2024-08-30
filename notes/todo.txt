@@ -1,0 +1,13 @@
+___ FLIP ___
+!!! - check evaluation of predictions -> many missing variants chosen, seems unlikely
+
+- why does FLIP cnn produce nan during training on PhoQ?
+    -> `hard` and `medium` tasks produce training sets with 0.0 fitness variants only
+    -> solved with non-zero fitness datasets
+
+___ DATA INSIGHTS ___
+- TrpB: try to find de-normalized fitness values
+    -> original paper normalizes the fitness, original probably unavailable
+
+- PhoQ: both medium and hard task produce train sets with 0.0 fitness variants only
+    -> these trian sets provide no information for training
